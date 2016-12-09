@@ -86,6 +86,10 @@ void initStruct(void) {
         exit(EXIT_FAILURE);
     }
 
+	if (err = rt_task_create(&tbatterie, NULL, 0, PRIORITY_TBATTERIE, 0)) {
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
     /* Creation des files de messages */
     if (err = rt_queue_create(&queueMsgGUI, "toto", MSG_QUEUE_SIZE*sizeof(DMessage), MSG_QUEUE_SIZE, Q_FIFO)){
         rt_printf("Error msg queue create: %s\n", strerror(-err));
@@ -116,6 +120,10 @@ void startTasks() {
         rt_printf("Error task start: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
+	if (err = rt_task_start(&tbatterie, &update_batterie, NULL)) {
+        rt_printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
 
 }
 
@@ -123,4 +131,5 @@ void deleteTasks() {
     rt_task_delete(&tServeur);
     rt_task_delete(&tconnect);
     rt_task_delete(&tmove);
+	rt_task_delete(&tmove);
 }
