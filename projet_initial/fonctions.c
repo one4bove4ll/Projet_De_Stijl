@@ -207,7 +207,7 @@ void image(void * arg) {
 	DImage* img;
 	DMessage* msg;
 	DJpegimage* imgjpg ;
-	DCamera* webcam ;
+//	DCamera* webcam ;
 
 	rt_printf("timage : Debut de l'éxecution de periodique à 600ms\n");
 	rt_task_set_periodic(NULL, TM_NOW, 600000000);
@@ -216,7 +216,7 @@ void image(void * arg) {
 		rt_printf("timage : Activation périodique\n");
 		rt_mutex_acquire(&mutexCamera,TM_INFINITE); //debut de la section critique
 		/*initialisation des variables*/
-		webcam = d_new_camera();
+//		webcam = d_new_camera();
 		img = d_new_image();
 		msg = d_new_message();			
 		imgjpg = d_new_jpegimage();

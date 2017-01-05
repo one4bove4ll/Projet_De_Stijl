@@ -62,19 +62,6 @@ In file included from ../include/x86_64-linux-gnu/sys/socket.h:40:0,
 ../include/x86_64-linux-gnu/bits/socket.h:440:8: warning: ‘struct mmsghdr’ declared inside parameter list [enabled by default]
         unsigned int __vlen, int __flags);
         ^
-fonctions.c: In function ‘image’:
-fonctions.c:220:3: error: void value not ignored as it ought to be
-   if(d_camera_open(webcam)==0) {
-   ^
-fonctions.c:209:14: warning: variable ‘imgjpg’ set but not used [-Wunused-but-set-variable]
-  DJpegimage* imgjpg ;
-              ^
-fonctions.c:208:12: warning: variable ‘msg’ set but not used [-Wunused-but-set-variable]
-  DMessage* msg;
-            ^
-fonctions.c:207:10: warning: variable ‘img’ set but not used [-Wunused-but-set-variable]
-  DImage* img;
-          ^
 In file included from ../include/opencv2/core/core_c.h:47:0,
                  from ../include/opencv/cv.h:63,
                  from ../lib_destijl/headers/././djpegimage.h:14,
@@ -85,7 +72,6 @@ In file included from ../include/opencv2/core/core_c.h:47:0,
                  from global.h:11,
                  from fonctions.h:11,
                  from fonctions.c:1:
-fonctions.c: At top level:
 ../include/opencv2/core/types_c.h:311:17: warning: ‘cvFloor’ defined but not used [-Wunused-function]
  CV_INLINE  int  cvFloor( double value )
                  ^
@@ -284,4 +270,7 @@ In file included from ../include/opencv/highgui.h:47:0,
 ../include/opencv2/highgui/highgui_c.h:445:15: warning: ‘CV_FOURCC’ defined but not used [-Wunused-function]
  CV_INLINE int CV_FOURCC(char c1, char c2, char c3, char c4)
                ^
-make: *** [fonctions.o] Erreur 1
+main.o : Dans la fonction « initStruct » :
+/home/bfoucher/Documents/4A/TpsReel/projet_initial/main.c:114 : référence indéfinie vers « d_wen_camera »
+collect2: error: ld returned 1 exit status
+make: *** [main] Erreur 1

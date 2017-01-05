@@ -111,7 +111,7 @@ void initStruct(void) {
 
     /* Creation des structures globales du projet */
     robot = d_new_robot();
-
+    webcam = d_new_camera();
 	/********** rajouté par paul *********/
 	if (robot == NULL) rt_printf("\n\nError creating robot OBJECT\n\n");
 	/*************************************/
