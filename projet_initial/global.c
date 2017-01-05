@@ -12,10 +12,12 @@ RT_TASK tconnect;
 RT_TASK tmove;
 RT_TASK tenvoyer;
 RT_TASK tbatterie;
+RT_TASK timage;
 
 RT_MUTEX mutexEtat;
 RT_MUTEX mutexMove;
 RT_MUTEX mutexRobot ;
+RT_MUTEX mutexCamera ;
 
 RT_SEM semConnecterRobot;
 
@@ -26,7 +28,6 @@ int etatCommRobot = 1;
 DRobot *robot;
 DMovement *move;
 DServer *serveur;
-
 
 int MSG_QUEUE_SIZE = 10;
 

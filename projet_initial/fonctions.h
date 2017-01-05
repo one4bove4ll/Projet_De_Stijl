@@ -19,6 +19,7 @@ extern "C" {
         void deplacer(void *arg);
 		void update_batterie(void* arg);        
 		void envoyer(void *arg);
+	void image(void* arg);
 #ifdef	__cplusplus
 }
 #endif

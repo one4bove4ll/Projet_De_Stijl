@@ -16,11 +16,13 @@ extern RT_TASK tconnect;
 extern RT_TASK tmove;
 extern RT_TASK tenvoyer;
 extern RT_TASK tbatterie ;
+extern RT_TASK timage ;
 
 /* @descripteurs des mutex */
 extern RT_MUTEX mutexEtat;
 extern RT_MUTEX mutexMove;
 extern RT_MUTEX mutexRobot ;
+extern RT_MUTEX mutexCamera ;
 
 
 /* @descripteurs des sempahore */

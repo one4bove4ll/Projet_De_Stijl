@@ -178,7 +178,7 @@ void update_batterie(void * arg){
     //je verifie la connexion avec le robot
     rt_mutex_acquire(&mutexEtat, TM_INFINITE);
     status = etatCommRobot;
-	rt_printf("\n\ntbatterie : status lu : %d\n\n\n", status); //debug
+    //rt_printf("\n\ntbatterie : status lu : %d\n\n\n", status); //debug
     rt_mutex_release(&mutexEtat);
 
     if (status == STATUS_OK) {
@@ -194,12 +194,50 @@ void update_batterie(void * arg){
 	  msg = d_new_message(); 
       d_message_put_battery_level(msg,bat);
       write_in_queue(&queueMsgGUI,msg,sizeof(DMessage));
-      rt_printf("sizeof(msg) = %d\n",sizeof(DMessage));//debug
+      //rt_printf("sizeof(msg) = %d\n",sizeof(DMessage));//debug
     
     }
   }
 
   d_message_free(msg);
+}
+
+void image(void * arg) {
+	
+	DImage* img;
+	DMessage* msg;
+	DJpegimage* imgjpg ;
+	DCamera* webcam ;
+
+	rt_printf("timage : Debut de l'éxecution de periodique à 600ms\n");
+	rt_task_set_periodic(NULL, TM_NOW, 600000000);
+	while(1){
+		rt_task_wait_period(NULL);
+		rt_printf("timage : Activation périodique\n");
+		rt_mutex_acquire(&mutexCamera,TM_INFINITE); //debut de la section critique
+		/*initialisation des variables*/
+		webcam = d_new_camera();
+		img = d_new_image();
+		msg = d_new_message();			
+		imgjpg = d_new_jpegimage();
+		/*----------------------------*/
+
+		/*--acquisition de l'image---*/
+		d_camera_open(webcam);
+		d_camera_get_frame(webcam,img);
+		d_camera_close(webcam);
+		/*--------------------------*/
+
+		d_jpegimage_compress(imgjpg,img);  //compression
+		d_message_put_jpeg_image(msg,imgjpg); //creation message
+		write_in_queue(&queueMsgGUI,msg,sizeof(DMessage)); //envoi message 	
+
+//		d_message_free(msg);
+//		d_image_free(img);
+//		d_jpegimage_free(imgjpg);
+		rt_mutex_release(&mutexCamera); //fin section critique
+	}
+
 }
 
 int write_in_queue(RT_QUEUE *msgQueue, void * data, int size) {
