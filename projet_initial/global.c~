@@ -20,6 +20,7 @@ RT_MUTEX mutexRobot ;
 RT_SEM semConnecterRobot;
 
 RT_QUEUE queueMsgGUI;
+RT_QUEUE queueMsgRobot;
 
 int etatCommMoniteur = 1;
 int etatCommRobot = 1;

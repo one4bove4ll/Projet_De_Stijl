@@ -81,6 +81,7 @@ void communiquer(void *arg) {
 	case ACTION_CONNECT_ROBOT:
 	  rt_printf("tserver : Action connecter robot\n");
 	  rt_sem_v(&semConnecterRobot);
+	  /*************************/
 	  break;
 	}
 	break;
@@ -163,7 +164,7 @@ void deplacer(void *arg) {
 void update_batterie(void * arg){
   
   DBattery* bat = d_new_battery();
-  DMessage* msg ;
+  DMessage* msg = d_new_message() ;
   int valbat ;
   int status = 1 ;
   //description du caractere periodique du thread (toutes les 250ms)
@@ -191,10 +192,9 @@ void update_batterie(void * arg){
 
       //j'envoie le Dmessage au moniteur
       d_battery_set_level(bat,valbat);
-	  msg = d_new_message(); 
       d_message_put_battery_level(msg,bat);
-      write_in_queue(&queueMsgGUI,msg,sizeof(DMessage));
-      rt_printf("sizeof(msg) = %d\n",sizeof(DMessage));//debug
+      write_in_queue(&queueMsgGUI,msg,sizeof(msg));
+      rt_printf("sizeof(msg) = %d\n",sizeof(msg));//debug
     
     }
   }

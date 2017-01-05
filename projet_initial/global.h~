@@ -28,6 +28,7 @@ extern RT_SEM semConnecterRobot;
 
 /* @descripteurs des files de messages */
 extern RT_QUEUE queueMsgGUI;
+extern RT_QUEUE queueMsgRobot;
 
 /* @variables partagées */
 extern int etatCommMoniteur;
