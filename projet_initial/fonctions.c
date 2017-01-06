@@ -229,7 +229,7 @@ void image(void * arg) {
 	while(1){
 		rt_task_wait_period(NULL);
 		rt_printf("timage : Activation périodique\n");
-		rt_mutex_acquire(&mutexCamera,TM_INFINITE); //debut de la section critique
+		rt_mutex_acquire(&mutexCamera,TM_INFINITE); //debut de la section critique a ajuster !
 		/*initialisation des variables*/
 //		webcam = d_new_camera();
 		img = d_new_image();
