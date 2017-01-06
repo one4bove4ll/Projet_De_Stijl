@@ -15,15 +15,13 @@ extern RT_TASK tServeur;
 extern RT_TASK tconnect;
 extern RT_TASK tmove;
 extern RT_TASK tenvoyer;
-extern RT_TASK tbatterie ;
-extern RT_TASK timage ;
+extern RT_TASK tcomm;
 
 /* @descripteurs des mutex */
 extern RT_MUTEX mutexEtat;
 extern RT_MUTEX mutexMove;
-extern RT_MUTEX mutexRobot ;
-extern RT_MUTEX mutexCamera ;
-extern RT_MUTEX mutexEtatCommMoniteur ;
+extern RT_MUTEX mutexRobot;
+extern RT_MUTEX mutexCptErrors;
 
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;
@@ -32,25 +30,22 @@ extern RT_SEM semConnecterRobot;
 extern RT_QUEUE queueMsgGUI;
 
 /* @variables partagées */
-extern int etatCommWebcam ;
 extern int etatCommMoniteur;
 extern int etatCommRobot;
 extern DServer *serveur;
 extern DRobot *robot;
 extern DMovement *move;
-extern DCamera* webcam ;
-extern DArena* arena ;
-extern DPosition* position;
-
 
 /* @constantes */
 extern int MSG_QUEUE_SIZE;
+
+extern int compteur_errors;
+
 extern int PRIORITY_TSERVEUR;
 extern int PRIORITY_TCONNECT;
 extern int PRIORITY_TMOVE;
 extern int PRIORITY_TENVOYER;
-extern int PRIORITY_TBATTERIE;
-
+extern int PRIORITY_TCOMM; /* priorité de la tâche wdt_ctrl_comm_sup_rob */
 
 #endif	/* GLOBAL_H */
 

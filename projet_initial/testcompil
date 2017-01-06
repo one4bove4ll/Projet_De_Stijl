@@ -1,0 +1,272 @@
+drobot.c: In function ‘d_robot_manage_cmd’:
+drobot.c:258:13: warning: pointer targets in passing argument 1 of ‘verify_checksum’ differ in signedness [-Wpointer-sign]
+             checksum = verify_checksum(ans);
+             ^
+drobot.c:160:6: note: expected ‘unsigned char *’ but argument is of type ‘char *’
+ char verify_checksum(unsigned char *ptr) {
+      ^
+drobot.c: In function ‘d_robot_open_device’:
+drobot.c:296:20: warning: unused variable ‘options’ [-Wunused-variable]
+     struct termios options;
+                    ^
+In file included from ../include/features.h:324:0,
+                 from ../include/stdio.h:28,
+                 from includes.h:11,
+                 from global.h:11,
+                 from fonctions.h:11,
+                 from fonctions.c:1:
+../include/x86_64-linux-gnu/bits/predefs.h:27:0: warning: "__STDC_IEC_559__" redefined [enabled by default]
+ #define __STDC_IEC_559__  1
+ ^
+In file included from <command-line>:0:0:
+/usr/include/stdc-predef.h:41:0: note: this is the location of the previous definition
+ # define __STDC_IEC_559__  1
+ ^
+In file included from ../include/features.h:324:0,
+                 from ../include/stdio.h:28,
+                 from includes.h:11,
+                 from global.h:11,
+                 from fonctions.h:11,
+                 from fonctions.c:1:
+../include/x86_64-linux-gnu/bits/predefs.h:28:0: warning: "__STDC_IEC_559_COMPLEX__" redefined [enabled by default]
+ #define __STDC_IEC_559_COMPLEX__ 1
+ ^
+In file included from <command-line>:0:0:
+/usr/include/stdc-predef.h:49:0: note: this is the location of the previous definition
+ # define __STDC_IEC_559_COMPLEX__ 1
+ ^
+In file included from ../include/stdio.h:28:0,
+                 from includes.h:11,
+                 from global.h:11,
+                 from fonctions.h:11,
+                 from fonctions.c:1:
+../include/features.h:327:0: warning: "__STDC_ISO_10646__" redefined [enabled by default]
+ #define __STDC_ISO_10646__  200009L
+ ^
+In file included from <command-line>:0:0:
+/usr/include/stdc-predef.h:54:0: note: this is the location of the previous definition
+ #define __STDC_ISO_10646__  201103L
+ ^
+In file included from ../include/x86_64-linux-gnu/sys/socket.h:40:0,
+                 from ../lib_destijl/headers/./dmessage.h:15,
+                 from ../lib_destijl/headers/daction.h:14,
+                 from ../lib_destijl/headers/dincludes.h:1,
+                 from includes.h:25,
+                 from global.h:11,
+                 from fonctions.h:11,
+                 from fonctions.c:1:
+../include/x86_64-linux-gnu/bits/socket.h:433:23: warning: ‘struct mmsghdr’ declared inside parameter list [enabled by default]
+        __const struct timespec *__tmo);
+                       ^
+../include/x86_64-linux-gnu/bits/socket.h:433:23: warning: its scope is only this definition or declaration, which is probably not what you want [enabled by default]
+../include/x86_64-linux-gnu/bits/socket.h:440:8: warning: ‘struct mmsghdr’ declared inside parameter list [enabled by default]
+        unsigned int __vlen, int __flags);
+        ^
+In file included from ../include/opencv2/core/core_c.h:47:0,
+                 from ../include/opencv/cv.h:63,
+                 from ../lib_destijl/headers/././djpegimage.h:14,
+                 from ../lib_destijl/headers/./dmessage.h:20,
+                 from ../lib_destijl/headers/daction.h:14,
+                 from ../lib_destijl/headers/dincludes.h:1,
+                 from includes.h:25,
+                 from global.h:11,
+                 from fonctions.h:11,
+                 from fonctions.c:1:
+../include/opencv2/core/types_c.h:311:17: warning: ‘cvFloor’ defined but not used [-Wunused-function]
+ CV_INLINE  int  cvFloor( double value )
+                 ^
+../include/opencv2/core/types_c.h:329:17: warning: ‘cvCeil’ defined but not used [-Wunused-function]
+ CV_INLINE  int  cvCeil( double value )
+                 ^
+../include/opencv2/core/types_c.h:349:15: warning: ‘cvIsNaN’ defined but not used [-Wunused-function]
+ CV_INLINE int cvIsNaN( double value )
+               ^
+../include/opencv2/core/types_c.h:364:15: warning: ‘cvIsInf’ defined but not used [-Wunused-function]
+ CV_INLINE int cvIsInf( double value )
+               ^
+../include/opencv2/core/types_c.h:385:17: warning: ‘cvRNG’ defined but not used [-Wunused-function]
+ CV_INLINE CvRNG cvRNG( int64 seed CV_DEFAULT(-1))
+                 ^
+../include/opencv2/core/types_c.h:401:18: warning: ‘cvRandReal’ defined but not used [-Wunused-function]
+ CV_INLINE double cvRandReal( CvRNG* rng )
+                  ^
+../include/opencv2/core/types_c.h:715:17: warning: ‘cvMat’ defined but not used [-Wunused-function]
+ CV_INLINE CvMat cvMat( int rows, int cols, int type, void* data CV_DEFAULT(NULL))
+                 ^
+../include/opencv2/core/types_c.h:745:20: warning: ‘cvmGet’ defined but not used [-Wunused-function]
+ CV_INLINE  double  cvmGet( const CvMat* mat, int row, int col )
+                    ^
+../include/opencv2/core/types_c.h:763:18: warning: ‘cvmSet’ defined but not used [-Wunused-function]
+ CV_INLINE  void  cvmSet( CvMat* mat, int row, int col, double value )
+                  ^
+../include/opencv2/core/types_c.h:780:15: warning: ‘cvIplDepth’ defined but not used [-Wunused-function]
+ CV_INLINE int cvIplDepth( int type )
+               ^
+../include/opencv2/core/types_c.h:955:20: warning: ‘cvRectToROI’ defined but not used [-Wunused-function]
+ CV_INLINE  IplROI  cvRectToROI( CvRect rect, int coi )
+                    ^
+../include/opencv2/core/types_c.h:968:20: warning: ‘cvROIToRect’ defined but not used [-Wunused-function]
+ CV_INLINE  CvRect  cvROIToRect( IplROI roi )
+                    ^
+../include/opencv2/core/types_c.h:989:28: warning: ‘cvTermCriteria’ defined but not used [-Wunused-function]
+ CV_INLINE  CvTermCriteria  cvTermCriteria( int type, int max_iter, double epsilon )
+                            ^
+../include/opencv2/core/types_c.h:1011:21: warning: ‘cvPoint’ defined but not used [-Wunused-function]
+ CV_INLINE  CvPoint  cvPoint( int x, int y )
+                     ^
+../include/opencv2/core/types_c.h:1041:26: warning: ‘cvPointTo32f’ defined but not used [-Wunused-function]
+ CV_INLINE  CvPoint2D32f  cvPointTo32f( CvPoint point )
+                          ^
+../include/opencv2/core/types_c.h:1066:26: warning: ‘cvPoint3D32f’ defined but not used [-Wunused-function]
+ CV_INLINE  CvPoint3D32f  cvPoint3D32f( double x, double y, double z )
+                          ^
+../include/opencv2/core/types_c.h:1086:26: warning: ‘cvPoint2D64f’ defined but not used [-Wunused-function]
+ CV_INLINE  CvPoint2D64f  cvPoint2D64f( double x, double y )
+                          ^
+../include/opencv2/core/types_c.h:1106:26: warning: ‘cvPoint3D64f’ defined but not used [-Wunused-function]
+ CV_INLINE  CvPoint3D64f  cvPoint3D64f( double x, double y, double z )
+                          ^
+../include/opencv2/core/types_c.h:1127:20: warning: ‘cvSize’ defined but not used [-Wunused-function]
+ CV_INLINE  CvSize  cvSize( int width, int height )
+                    ^
+../include/opencv2/core/types_c.h:1145:25: warning: ‘cvSize2D32f’ defined but not used [-Wunused-function]
+ CV_INLINE  CvSize2D32f  cvSize2D32f( double width, double height )
+                         ^
+../include/opencv2/core/types_c.h:1221:22: warning: ‘cvRealScalar’ defined but not used [-Wunused-function]
+ CV_INLINE  CvScalar  cvRealScalar( double val0 )
+                      ^
+../include/opencv2/core/types_c.h:1229:22: warning: ‘cvScalarAll’ defined but not used [-Wunused-function]
+ CV_INLINE  CvScalar  cvScalarAll( double val0123 )
+                      ^
+../include/opencv2/core/types_c.h:1739:22: warning: ‘cvAttrList’ defined but not used [-Wunused-function]
+ CV_INLINE CvAttrList cvAttrList( const char** attr CV_DEFAULT(NULL),
+                      ^
+In file included from ../include/opencv/cv.h:63:0,
+                 from ../lib_destijl/headers/././djpegimage.h:14,
+                 from ../lib_destijl/headers/./dmessage.h:20,
+                 from ../lib_destijl/headers/daction.h:14,
+                 from ../lib_destijl/headers/dincludes.h:1,
+                 from includes.h:25,
+                 from global.h:11,
+                 from fonctions.h:11,
+                 from fonctions.c:1:
+../include/opencv2/core/core_c.h:127:18: warning: ‘cvDecRefData’ defined but not used [-Wunused-function]
+ CV_INLINE  void  cvDecRefData( CvArr* arr )
+                  ^
+../include/opencv2/core/core_c.h:148:17: warning: ‘cvIncRefData’ defined but not used [-Wunused-function]
+ CV_INLINE  int  cvIncRefData( CvArr* arr )
+                 ^
+../include/opencv2/core/core_c.h:182:20: warning: ‘cvGetRow’ defined but not used [-Wunused-function]
+ CV_INLINE  CvMat*  cvGetRow( const CvArr* arr, CvMat* submat, int row )
+                    ^
+../include/opencv2/core/core_c.h:193:20: warning: ‘cvGetCol’ defined but not used [-Wunused-function]
+ CV_INLINE  CvMat*  cvGetCol( const CvArr* arr, CvMat* submat, int col )
+                    ^
+../include/opencv2/core/core_c.h:222:18: warning: ‘cvReleaseMatND’ defined but not used [-Wunused-function]
+ CV_INLINE  void  cvReleaseMatND( CvMatND** mat )
+                  ^
+../include/opencv2/core/core_c.h:245:25: warning: ‘cvGetNextSparseNode’ defined but not used [-Wunused-function]
+ CV_INLINE CvSparseNode* cvGetNextSparseNode( CvSparseMatIterator* mat_iterator )
+                         ^
+../include/opencv2/core/core_c.h:495:18: warning: ‘cvSubS’ defined but not used [-Wunused-function]
+ CV_INLINE  void  cvSubS( const CvArr* src, CvScalar value, CvArr* dst,
+                  ^
+../include/opencv2/core/core_c.h:1057:18: warning: ‘cvCloneSeq’ defined but not used [-Wunused-function]
+ CV_INLINE CvSeq* cvCloneSeq( const CvSeq* seq, CvMemStorage* storage CV_DEFAULT(NULL))
+                  ^
+../include/opencv2/core/core_c.h:1100:23: warning: ‘cvSetNew’ defined but not used [-Wunused-function]
+ CV_INLINE  CvSetElem* cvSetNew( CvSet* set_header )
+                       ^
+../include/opencv2/core/core_c.h:1115:17: warning: ‘cvSetRemoveByPtr’ defined but not used [-Wunused-function]
+ CV_INLINE  void cvSetRemoveByPtr( CvSet* set_header, void* elem )
+                 ^
+../include/opencv2/core/core_c.h:1130:22: warning: ‘cvGetSetElem’ defined but not used [-Wunused-function]
+ CV_INLINE CvSetElem* cvGetSetElem( const CvSet* set_header, int index )
+                      ^
+../include/opencv2/core/core_c.h:1302:18: warning: ‘cvEllipseBox’ defined but not used [-Wunused-function]
+ CV_INLINE  void  cvEllipseBox( CvArr* img, CvBox2D box, CvScalar color,
+                  ^
+../include/opencv2/core/core_c.h:1398:18: warning: ‘cvFont’ defined but not used [-Wunused-function]
+ CV_INLINE CvFont cvFont( double scale, int thickness CV_DEFAULT(1) )
+                  ^
+../include/opencv2/core/core_c.h:1601:15: warning: ‘cvReadIntByName’ defined but not used [-Wunused-function]
+ CV_INLINE int cvReadIntByName( const CvFileStorage* fs, const CvFileNode* map,
+               ^
+../include/opencv2/core/core_c.h:1616:18: warning: ‘cvReadRealByName’ defined but not used [-Wunused-function]
+ CV_INLINE double cvReadRealByName( const CvFileStorage* fs, const CvFileNode* map,
+                  ^
+../include/opencv2/core/core_c.h:1630:23: warning: ‘cvReadStringByName’ defined but not used [-Wunused-function]
+ CV_INLINE const char* cvReadStringByName( const CvFileStorage* fs, const CvFileNode* map,
+                       ^
+../include/opencv2/core/core_c.h:1642:17: warning: ‘cvReadByName’ defined but not used [-Wunused-function]
+ CV_INLINE void* cvReadByName( CvFileStorage* fs, const CvFileNode* map,
+                 ^
+In file included from ../include/opencv/cv.h:65:0,
+                 from ../lib_destijl/headers/././djpegimage.h:14,
+                 from ../lib_destijl/headers/./dmessage.h:20,
+                 from ../lib_destijl/headers/daction.h:14,
+                 from ../lib_destijl/headers/dincludes.h:1,
+                 from includes.h:25,
+                 from global.h:11,
+                 from fonctions.h:11,
+                 from fonctions.c:1:
+../include/opencv2/imgproc/imgproc_c.h:373:24: warning: ‘cvCreateSubdivDelaunay2D’ defined but not used [-Wunused-function]
+ CV_INLINE  CvSubdiv2D* cvCreateSubdivDelaunay2D( CvRect rect, CvMemStorage* storage )
+                        ^
+../include/opencv2/imgproc/imgproc_c.h:408:28: warning: ‘cvSubdiv2DNextEdge’ defined but not used [-Wunused-function]
+ CV_INLINE  CvSubdiv2DEdge  cvSubdiv2DNextEdge( CvSubdiv2DEdge edge )
+                            ^
+../include/opencv2/imgproc/imgproc_c.h:414:28: warning: ‘cvSubdiv2DRotateEdge’ defined but not used [-Wunused-function]
+ CV_INLINE  CvSubdiv2DEdge  cvSubdiv2DRotateEdge( CvSubdiv2DEdge edge, int rotate )
+                            ^
+../include/opencv2/imgproc/imgproc_c.h:419:28: warning: ‘cvSubdiv2DSymEdge’ defined but not used [-Wunused-function]
+ CV_INLINE  CvSubdiv2DEdge  cvSubdiv2DSymEdge( CvSubdiv2DEdge edge )
+                            ^
+../include/opencv2/imgproc/imgproc_c.h:424:28: warning: ‘cvSubdiv2DGetEdge’ defined but not used [-Wunused-function]
+ CV_INLINE  CvSubdiv2DEdge  cvSubdiv2DGetEdge( CvSubdiv2DEdge edge, CvNextEdgeType type )
+                            ^
+../include/opencv2/imgproc/imgproc_c.h:432:30: warning: ‘cvSubdiv2DEdgeOrg’ defined but not used [-Wunused-function]
+ CV_INLINE  CvSubdiv2DPoint*  cvSubdiv2DEdgeOrg( CvSubdiv2DEdge edge )
+                              ^
+../include/opencv2/imgproc/imgproc_c.h:439:30: warning: ‘cvSubdiv2DEdgeDst’ defined but not used [-Wunused-function]
+ CV_INLINE  CvSubdiv2DPoint*  cvSubdiv2DEdgeDst( CvSubdiv2DEdge edge )
+                              ^
+../include/opencv2/imgproc/imgproc_c.h:446:20: warning: ‘cvTriangleArea’ defined but not used [-Wunused-function]
+ CV_INLINE  double  cvTriangleArea( CvPoint2D32f a, CvPoint2D32f b, CvPoint2D32f c )
+                    ^
+../include/opencv2/imgproc/imgproc_c.h:468:18: warning: ‘cvContourPerimeter’ defined but not used [-Wunused-function]
+ CV_INLINE double cvContourPerimeter( const void* contour )
+                  ^
+../include/opencv2/imgproc/imgproc_c.h:592:18: warning: ‘cvCalcHist’ defined but not used [-Wunused-function]
+ CV_INLINE  void  cvCalcHist( IplImage** image, CvHistogram* hist,
+                  ^
+In file included from ../include/opencv/cv.h:68:0,
+                 from ../lib_destijl/headers/././djpegimage.h:14,
+                 from ../lib_destijl/headers/./dmessage.h:20,
+                 from ../lib_destijl/headers/daction.h:14,
+                 from ../lib_destijl/headers/dincludes.h:1,
+                 from includes.h:25,
+                 from global.h:11,
+                 from fonctions.h:11,
+                 from fonctions.c:1:
+../include/opencv2/features2d/features2d.hpp:66:23: warning: ‘cvSURFPoint’ defined but not used [-Wunused-function]
+ CV_INLINE CvSURFPoint cvSURFPoint( CvPoint2D32f pt, int laplacian,
+                       ^
+../include/opencv2/features2d/features2d.hpp:146:26: warning: ‘cvStarKeypoint’ defined but not used [-Wunused-function]
+ CV_INLINE CvStarKeypoint cvStarKeypoint(CvPoint pt, int size, float response)
+                          ^
+../include/opencv2/features2d/features2d.hpp:164:32: warning: ‘cvStarDetectorParams’ defined but not used [-Wunused-function]
+ CV_INLINE CvStarDetectorParams cvStarDetectorParams(
+                                ^
+In file included from ../include/opencv/highgui.h:47:0,
+                 from ../lib_destijl/headers/././djpegimage.h:15,
+                 from ../lib_destijl/headers/./dmessage.h:20,
+                 from ../lib_destijl/headers/daction.h:14,
+                 from ../lib_destijl/headers/dincludes.h:1,
+                 from includes.h:25,
+                 from global.h:11,
+                 from fonctions.h:11,
+                 from fonctions.c:1:
+../include/opencv2/highgui/highgui_c.h:445:15: warning: ‘CV_FOURCC’ defined but not used [-Wunused-function]
+ CV_INLINE int CV_FOURCC(char c1, char c2, char c3, char c4)
+               ^

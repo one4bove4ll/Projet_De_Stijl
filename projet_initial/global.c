@@ -11,34 +11,24 @@ RT_TASK tServeur;
 RT_TASK tconnect;
 RT_TASK tmove;
 RT_TASK tenvoyer;
-RT_TASK tbatterie;
-RT_TASK timage;
+RT_TASK tcomm; /* task liée à la fonction "void wtd_ctrl_comm_sup_rob(void * arg)" */
 
-RT_MUTEX mutexEtatCamera ;
-RT_MUTEX mutexEtatCommMoniteur ;
 RT_MUTEX mutexEtat;
-RT_MUTEX mutexRobot ;
 RT_MUTEX mutexMove;
-RT_MUTEX mutexServeur ;
-RT_MUTEX mutexCamera ;
-RT_MUTEX mutexArena ;
-RT_MUTEX mutexPosition ;
-
+RT_MUTEX mutexRobot;
+RT_MUTEX mutexCptErrors;
 
 RT_SEM semConnecterRobot;
 
 RT_QUEUE queueMsgGUI;
 
-int etatCommWebcam ;
 int etatCommMoniteur = 1;
 int etatCommRobot = 1;
 DRobot *robot;
 DMovement *move;
 DServer *serveur;
-DCamera* webcam ;
-DArena* arena ;
-DPosition* position ;
 
+int compteur_errors = 0;
 
 
 int MSG_QUEUE_SIZE = 10;
@@ -47,4 +37,4 @@ int PRIORITY_TSERVEUR = 30;
 int PRIORITY_TCONNECT = 20;
 int PRIORITY_TMOVE = 10;
 int PRIORITY_TENVOYER = 25;
-int PRIORITY_TBATTERIE = 35;
+int PRIORITY_TCOMM = 25; /* voir si cela est bien */

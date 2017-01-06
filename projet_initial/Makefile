@@ -1,4 +1,4 @@
-CC=gcc
+	CC=gcc
 LINK=g++
 CFLAGS=-I../include -I../include/x86_64-linux-gnu -I../xenomai/include  -I../lib_destijl/headers
 OBJ=fonctions.o global.o main.o
@@ -13,20 +13,20 @@ main: $(OBJ)
 
 
 fonctions.o: fonctions.c dmessage.o fonctions.h 
-	$(CC) -g -Wall $(CFLAGS)  -c fonctions.c -o fonctions.o
+	$(CC) -g  $(CFLAGS)  -c fonctions.c -o fonctions.o
 
 
 global.o: global.c global.h
-	$(CC) -g -Wall $(CFLAGS) -c global.c -o global.o
+	$(CC) -g  $(CFLAGS) -c global.c -o global.o
 
 
 main.o: main.c global.h fonctions.h
-	$(CC) -g -Wall $(CFLAGS) -c main.c -o main.o
+	$(CC) -g  $(CFLAGS) -c main.c -o main.o
 
 
 dmessage.o: ../lib_destijl/source/dmessage.c ../lib_destijl/headers/dmessage.h ../lib_destijl/headers/dtools.h  
 	cd ../lib_destijl/source; echo "entering source"; \
-	$(CC) -g -Wall $(CFLAGS)  -c *.c
+	$(CC) -g  $(CFLAGS)  -c *.c
 	cd ..
 
 clean:

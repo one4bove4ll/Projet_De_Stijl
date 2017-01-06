@@ -17,9 +17,8 @@ extern "C" {
         void connecter (void * arg);
         void communiquer(void *arg);
         void deplacer(void *arg);
-		void th_battery(void* arg);        
-		void envoyer(void *arg);
-	void image(void* arg);
+        void envoyer(void *arg);
+	void wtd_ctrl_comm_sup_rob(void * arg);
 #ifdef	__cplusplus
 }
 #endif
