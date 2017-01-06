@@ -160,12 +160,13 @@ void deplacer(void *arg) {
   }
 }
 
-void update_batterie(void * arg){
+void th_battery(void * arg){
   
   DBattery* bat = d_new_battery();
   DMessage* msg ;
   int valbat ;
-  int status = 1 ;
+  int status_robot = 1 ;
+  int status_moniteur =1 ;
   //description du caractere periodique du thread (toutes les 250ms)
 
   rt_printf("tbatterie : Debut de l'éxecution de periodique à 250ms\n");
@@ -177,26 +178,40 @@ void update_batterie(void * arg){
 
     //je verifie la connexion avec le robot
     rt_mutex_acquire(&mutexEtat, TM_INFINITE);
-    status = etatCommRobot;
+    status_robot = etatCommRobot;
     //rt_printf("\n\ntbatterie : status lu : %d\n\n\n", status); //debug
     rt_mutex_release(&mutexEtat);
 
-    if (status == STATUS_OK) {
+    //je verifie la connexion avec le moniteur
+    rt_mutex_acquire(&mutexEtatCommMoniteur, TM_INFINITE);
+    status_moniteur = etatCommMoniteur ;
+    rt_mutex_release(&mutexEtatCommMoniteur);
+
+
+    if (status_robot == STATUS_OK && status_moniteur == STATUS_OK) {
+      //zone critique pour le robot
       rt_mutex_acquire(&mutexRobot, TM_INFINITE);
       //je récupère la valeur de la batterie
       d_robot_get_vbat(robot,&valbat);
       rt_mutex_release(&mutexRobot);
 
-      //je verifie la connexion avec le moniteur
-
-      //j'envoie le Dmessage au moniteur
-      d_battery_set_level(bat,valbat);
-	  msg = d_new_message(); 
-      d_message_put_battery_level(msg,bat);
-      write_in_queue(&queueMsgGUI,msg,sizeof(DMessage));
-      //rt_printf("sizeof(msg) = %d\n",sizeof(DMessage));//debug
-    
+      if(valbat ==-1){//erreur de connexion
+	rt_mutext_acquire(&mutexCptErrors,TM_INFINITE);
+	compteur_errors++;
+	rt_mutex_release(&mutexCptErrors);
+       }else {//connexion ok
+	rt_mutex_acquire(&mutexCptErrors,TM_INFINITE);
+	compteur_errors=0;
+	rt_mutex_release(&mutexCptErrors);
+        //j'envoie le Dmessage au moniteur
+        d_battery_set_level(bat,valbat);
+        msg = d_new_message(); 
+        d_message_put_battery_level(msg,bat);
+        write_in_queue(&queueMsgGUI,msg,sizeof(DMessage));
+        //rt_printf("sizeof(msg) = %d\n",sizeof(DMessage));//debug
+      }
     }
+    
   }
 
   d_message_free(msg);

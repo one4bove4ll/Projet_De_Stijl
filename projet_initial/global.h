@@ -23,7 +23,7 @@ extern RT_MUTEX mutexEtat;
 extern RT_MUTEX mutexMove;
 extern RT_MUTEX mutexRobot ;
 extern RT_MUTEX mutexCamera ;
-
+extern RT_MUTEX mutexEtatCommMoniteur ;
 
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;
@@ -32,12 +32,16 @@ extern RT_SEM semConnecterRobot;
 extern RT_QUEUE queueMsgGUI;
 
 /* @variables partagées */
+extern int etatCommWebcam ;
 extern int etatCommMoniteur;
 extern int etatCommRobot;
 extern DServer *serveur;
 extern DRobot *robot;
 extern DMovement *move;
 extern DCamera* webcam ;
+extern DArena* arena ;
+extern DPosition* position;
+
 
 /* @constantes */
 extern int MSG_QUEUE_SIZE;

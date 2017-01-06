@@ -65,7 +65,27 @@ void initStruct(void) {
         rt_printf("Error mutex create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
+    if (err = rt_mutex_create(&mutexServeur, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
     if (err = rt_mutex_create(&mutexCamera, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_mutex_create(&mutexEtatCommMoniteur, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    } 
+    if (err = rt_mutex_create(&mutexEtatCamera, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_mutex_create(&mutexArena, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_mutex_create(&mutexPosition, NULL)) {
         rt_printf("Error mutex create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
@@ -77,6 +97,11 @@ void initStruct(void) {
     }
 
     /* Creation des taches */
+
+
+
+
+/*--------------------------/!\Attention, vérifier les priorités/!\---------------------------------*/
     if (err = rt_task_create(&tServeur, NULL, 0, PRIORITY_TSERVEUR, 0)) {
         rt_printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
@@ -99,7 +124,7 @@ void initStruct(void) {
         exit(EXIT_FAILURE);
     }
    
-    if (err = rt_task_create(&timage, NULL, 0, PRIORITY_TBATTERIE, 0)) {
+    if (err = rt_task_create(&timage, NULL, 0, PRIORITY_TBATTERIE, 0)) {  //la priorité est à revoir
         rt_printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
@@ -138,7 +163,7 @@ void startTasks() {
         rt_printf("Error task start: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-    if (err = rt_task_start(&tbatterie, &update_batterie, NULL)) {
+    if (err = rt_task_start(&tbatterie, &th_battery, NULL)) {
         rt_printf("Error task start: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
