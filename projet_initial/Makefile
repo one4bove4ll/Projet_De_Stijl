@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 	CC=gcc
+=======
+CC=gcc
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 LINK=g++
 CFLAGS=-I../include -I../include/x86_64-linux-gnu -I../xenomai/include  -I../lib_destijl/headers
 OBJ=fonctions.o global.o main.o
@@ -13,6 +17,7 @@ main: $(OBJ)
 
 
 fonctions.o: fonctions.c dmessage.o fonctions.h 
+<<<<<<< HEAD
 	$(CC) -g  $(CFLAGS)  -c fonctions.c -o fonctions.o
 
 
@@ -22,11 +27,26 @@ global.o: global.c global.h
 
 main.o: main.c global.h fonctions.h
 	$(CC) -g  $(CFLAGS) -c main.c -o main.o
+=======
+	$(CC) -g -Wall $(CFLAGS)  -c fonctions.c -o fonctions.o
+
+
+global.o: global.c global.h
+	$(CC) -g -Wall $(CFLAGS) -c global.c -o global.o
+
+
+main.o: main.c global.h fonctions.h
+	$(CC) -g -Wall $(CFLAGS) -c main.c -o main.o
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 
 
 dmessage.o: ../lib_destijl/source/dmessage.c ../lib_destijl/headers/dmessage.h ../lib_destijl/headers/dtools.h  
 	cd ../lib_destijl/source; echo "entering source"; \
+<<<<<<< HEAD
 	$(CC) -g  $(CFLAGS)  -c *.c
+=======
+	$(CC) -g -Wall $(CFLAGS)  -c *.c
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 	cd ..
 
 clean:

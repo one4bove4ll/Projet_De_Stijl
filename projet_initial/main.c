@@ -65,23 +65,68 @@ void initStruct(void) {
         rt_printf("Error mutex create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
+<<<<<<< HEAD
     if (err = rt_mutex_create(&mutexCptErrors, NULL)) {
         rt_printf("Error mutex create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
     if (err = rt_mutex_create(&mutexServeur, NULL)) {
+=======
+    if (err = rt_mutex_create(&mutexServeur, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_mutex_create(&mutexCamera, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_mutex_create(&mutexEtatCommMoniteur, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    } 
+    if (err = rt_mutex_create(&mutexEtatCamera, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_mutex_create(&mutexArena, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_mutex_create(&mutexPosition, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_mutex_create(&mutexEtatThArena, NULL)) {
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
         rt_printf("Error mutex create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
 
+<<<<<<< HEAD
 
     /* Creation du semaphore */
+=======
+    /* Creation des semaphores */
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
     if (err = rt_sem_create(&semConnecterRobot, NULL, 0, S_FIFO)) {
         rt_printf("Error semaphore create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
+<<<<<<< HEAD
 
     /* Creation des taches */
+=======
+    if (err = rt_sem_create(&semArena, NULL, 0, S_FIFO)) {
+        rt_printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    /* Creation des taches */
+
+
+
+
+/*--------------------------/!\Attention, vérifier les priorités/!\---------------------------------*/
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
     if (err = rt_task_create(&tServeur, NULL, 0, PRIORITY_TSERVEUR, 0)) {
         rt_printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
@@ -99,8 +144,28 @@ void initStruct(void) {
         exit(EXIT_FAILURE);
     }
 
+<<<<<<< HEAD
 
     /* Creation des files de messages */
+=======
+    if (err = rt_task_create(&tbatterie, NULL, 0, PRIORITY_TBATTERIE, 0)) {
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+   
+    if (err = rt_task_create(&timage, NULL, 0, PRIORITY_TIMAGE, 0)) {  //la priorité est à revoir
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    
+
+    if (err = rt_task_create(&tarena, NULL, 0, PRIORITY_TARENA, 0)) {  //la priorité est à revoir
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+
+ /* Creation des files de messages */
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
     if (err = rt_queue_create(&queueMsgGUI, "toto", MSG_QUEUE_SIZE*sizeof(DMessage), MSG_QUEUE_SIZE, Q_FIFO)){
         rt_printf("Error msg queue create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
@@ -108,8 +173,20 @@ void initStruct(void) {
 
     /* Creation des structures globales du projet */
     robot = d_new_robot();
+<<<<<<< HEAD
     move = d_new_movement();
     serveur = d_new_server();
+=======
+    webcam = d_new_camera();
+	/********** rajouté par paul *********/
+	if (robot == NULL) rt_printf("\n\nError creating robot OBJECT\n\n");
+	/*************************************/
+
+    move = d_new_movement();
+    serveur = d_new_server();
+    d_camera_open(webcam);
+    arena = d_new_arena();
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 }
 
 void startTasks() {
@@ -130,10 +207,39 @@ void startTasks() {
         rt_printf("Error task start: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
+<<<<<<< HEAD
 }
 
 void deleteTasks() {
     rt_task_delete(&tServeur);
     rt_task_delete(&tconnect);
     rt_task_delete(&tmove);
+=======
+    if (err = rt_task_start(&tbatterie, &th_battery, NULL)) {
+        rt_printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_start(&timage, &image, NULL)) {
+        rt_printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+
+
+    if (err = rt_task_start(&tarena, &th_arena, NULL)) {
+        rt_printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+
+}
+
+void deleteTasks() {
+    d_camera_close(webcam);
+    rt_task_delete(&tServeur);
+    rt_task_delete(&tconnect);
+    rt_task_delete(&tmove);
+    rt_task_delete(&tmove);
+    rt_task_delete(&tbatterie);
+    rt_task_delete(&timage);
+    rt_task_delete(&tarena);
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 }

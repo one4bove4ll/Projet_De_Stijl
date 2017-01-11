@@ -18,7 +18,10 @@ extern "C" {
         void communiquer(void *arg);
         void deplacer(void *arg);
         void envoyer(void *arg);
+<<<<<<< HEAD
 	void wtd_ctrl_comm_sup_rob(void * arg)
+=======
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 #ifdef	__cplusplus
 }
 #endif

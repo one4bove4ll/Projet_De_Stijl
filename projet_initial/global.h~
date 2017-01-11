@@ -15,20 +15,33 @@ extern RT_TASK tServeur;
 extern RT_TASK tconnect;
 extern RT_TASK tmove;
 extern RT_TASK tenvoyer;
+<<<<<<< HEAD
 extern RT_TASK tcomm;
+=======
+extern RT_TASK tbatterie ;
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 
 /* @descripteurs des mutex */
 extern RT_MUTEX mutexEtat;
 extern RT_MUTEX mutexMove;
+<<<<<<< HEAD
 extern RT_MUTEX mutexRobot;
 extern RT_MUTEX mutexCptErrors;
 extern RT_MUTEX
+=======
+extern RT_MUTEX mutexRobot ;
+
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;
 
 /* @descripteurs des files de messages */
 extern RT_QUEUE queueMsgGUI;
+<<<<<<< HEAD
+=======
+extern RT_QUEUE queueMsgRobot;
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 
 /* @variables partagées */
 extern int etatCommMoniteur;
@@ -39,14 +52,22 @@ extern DMovement *move;
 
 /* @constantes */
 extern int MSG_QUEUE_SIZE;
+<<<<<<< HEAD
 
 extern int compteur_errors;
 
+=======
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 extern int PRIORITY_TSERVEUR;
 extern int PRIORITY_TCONNECT;
 extern int PRIORITY_TMOVE;
 extern int PRIORITY_TENVOYER;
+<<<<<<< HEAD
 extern int PRIORITY_TCOMM; /* priorité de la tâche wdt_ctrl_comm_sup_rob */
+=======
+extern int PRIORITY_TBATTERIE;
+
+>>>>>>> 449c872fe420a7a32aaaeadea45a3a270bf9f1f7
 
 #endif	/* GLOBAL_H */
 
