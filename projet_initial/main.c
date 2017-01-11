@@ -89,13 +89,20 @@ void initStruct(void) {
         rt_printf("Error mutex create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
+    if (err = rt_mutex_create(&mutexEtatThArena, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
 
-    /* Creation du semaphore */
+    /* Creation des semaphores */
     if (err = rt_sem_create(&semConnecterRobot, NULL, 0, S_FIFO)) {
         rt_printf("Error semaphore create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-
+    if (err = rt_sem_create(&semArena, NULL, 0, S_FIFO)) {
+        rt_printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
     /* Creation des taches */
 
 
@@ -124,11 +131,18 @@ void initStruct(void) {
         exit(EXIT_FAILURE);
     }
    
-    if (err = rt_task_create(&timage, NULL, 0, PRIORITY_TBATTERIE, 0)) {  //la priorité est à revoir
+    if (err = rt_task_create(&timage, NULL, 0, PRIORITY_TIMAGE, 0)) {  //la priorité est à revoir
         rt_printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-     /* Creation des files de messages */
+    
+
+    if (err = rt_task_create(&tarena, NULL, 0, PRIORITY_TARENA, 0)) {  //la priorité est à revoir
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+
+ /* Creation des files de messages */
     if (err = rt_queue_create(&queueMsgGUI, "toto", MSG_QUEUE_SIZE*sizeof(DMessage), MSG_QUEUE_SIZE, Q_FIFO)){
         rt_printf("Error msg queue create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
@@ -143,6 +157,8 @@ void initStruct(void) {
 
     move = d_new_movement();
     serveur = d_new_server();
+    d_camera_open(webcam);
+    arena = d_new_arena();
 }
 
 void startTasks() {
@@ -172,13 +188,21 @@ void startTasks() {
         exit(EXIT_FAILURE);
     }
 
+
+    if (err = rt_task_start(&tarena, &th_arena, NULL)) {
+        rt_printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+
 }
 
 void deleteTasks() {
+    d_camera_close(webcam);
     rt_task_delete(&tServeur);
     rt_task_delete(&tconnect);
     rt_task_delete(&tmove);
     rt_task_delete(&tmove);
     rt_task_delete(&tbatterie);
     rt_task_delete(&timage);
+    rt_task_delete(&tarena);
 }

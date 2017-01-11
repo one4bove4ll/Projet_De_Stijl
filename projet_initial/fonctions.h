@@ -17,9 +17,10 @@ extern "C" {
         void connecter (void * arg);
         void communiquer(void *arg);
         void deplacer(void *arg);
-		void th_battery(void* arg);        
-		void envoyer(void *arg);
+	void th_battery(void* arg);        
+	void envoyer(void *arg);
 	void image(void* arg);
+	void th_arena(void* arg);
 #ifdef	__cplusplus
 }
 #endif

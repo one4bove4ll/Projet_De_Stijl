@@ -82,6 +82,27 @@ void communiquer(void *arg) {
 	  rt_printf("tserver : Action connecter robot\n");
 	  rt_sem_v(&semConnecterRobot);
 	  break;
+	case ACTION_FIND_ARENA:
+	  rt_printf("tserver : Demande de calibration de l'arene\n");
+	  rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
+	  etatThArena = 0 ;
+	  rt_mutex_release(&mutexEtatThArena);
+	  rt_sem_v(&semArena);
+	  break;
+	case ACTION_ARENA_IS_FOUND:
+	  rt_printf("tserver : Arene Trouvée !! \n");
+	  rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
+	  etatThArena = 1 ;
+	  rt_mutex_release(&mutexEtatThArena);
+	  rt_sem_v(&semArena);
+	  break;
+	case ACTION_ARENA_FAILED:
+	  rt_printf("tserver : Arene non trouvée :( \n");
+	  rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
+	  etatThArena = -1 ;
+	  rt_mutex_release(&mutexEtatThArena);
+	  rt_sem_v(&semArena);
+	  break;
 	}
 	break;
       case MESSAGE_TYPE_MOVEMENT:
@@ -196,7 +217,7 @@ void th_battery(void * arg){
       rt_mutex_release(&mutexRobot);
 
       if(valbat ==-1){//erreur de connexion
-	rt_mutext_acquire(&mutexCptErrors,TM_INFINITE);
+	rt_mutex_acquire(&mutexCptErrors,TM_INFINITE);
 	compteur_errors++;
 	rt_mutex_release(&mutexCptErrors);
        }else {//connexion ok
@@ -238,10 +259,19 @@ void image(void * arg) {
 		/*----------------------------*/
 
 		/*--acquisition de l'image---*/
-		d_camera_open(webcam);
+		//d_camera_open(webcam);
 		d_camera_get_frame(webcam,img);
-		d_camera_close(webcam);
+		//d_camera_close(webcam);
 		/*--------------------------*/
+
+		rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
+		if(etatThArena == 1){
+			rt_mutex_acquire(&mutexArena,TM_INFINITE);
+			d_imageshop_draw_arena(img,arena);
+			rt_mutex_release(&mutexArena);
+		}
+		rt_mutex_release(&mutexEtatThArena);
+		
 
 		d_jpegimage_compress(imgjpg,img);  //compression
 		d_message_put_jpeg_image(msg,imgjpg); //creation message
@@ -252,6 +282,72 @@ void image(void * arg) {
 //		d_jpegimage_free(imgjpg);
 		rt_mutex_release(&mutexCamera); //fin section critique
 	}
+
+}
+
+
+void th_arena(void * arg){
+  int status ;	
+  DMessage *msg;
+  DImage *img ;
+  DJpegimage* imgjpg ;
+
+  rt_printf("tconnect : Debut de l'exécution de tarena\n");
+
+  while (1) {
+    rt_printf("tarena : Attente du sémaphore semArena\n");
+    rt_sem_p(&semArena, TM_INFINITE);
+    rt_printf("tarena : Début de la calibration de l'arene\n");   
+ 
+    /*----------PARTIE 1 Calcul et detection de l'arene------------*/
+    /*------------Verification Communication Moniteur--------------*/
+    rt_mutex_acquire(&mutexEtatCommMoniteur, TM_INFINITE);
+    etatCommMoniteur = status;
+    rt_mutex_release(&mutexEtatCommMoniteur);
+
+    if(status == STATUS_OK){
+	rt_mutex_acquire(&mutexCamera, TM_INFINITE);
+    /*----------------Initialisation des variables-----------------*/
+	img = d_new_image();
+	msg = d_new_message();
+	imgjpg= d_new_jpegimage();
+    /*-------------------------------------------------------------*/
+
+    /*------------------Acquisition de l'image---------------------*/
+	d_camera_get_frame(webcam,img);
+    /*-------------------------------------------------------------*/
+    /*----------------Detection et trace de l'arene----------------*/
+	rt_mutex_acquire(&mutexArena,TM_INFINITE);
+
+	arena = d_image_compute_arena_position(img);
+	d_imageshop_draw_arena(img,arena);
+
+	rt_mutex_release(&mutexArena);
+    /*-------------------------------------------------------------*/
+    /*--------------Compression et envoi de l'image----------------*/
+	d_jpegimage_compress(imgjpg,img);  //compression
+	d_message_put_jpeg_image(msg,imgjpg); //creation message
+	write_in_queue(&queueMsgGUI,msg,sizeof(DMessage)); //envoi message 
+	rt_printf("Envoie de l'image au moniteur \n");
+    /*-------------------------------------------------------------*/
+    /*-------------PARTIE 2 Réponse de l'utilisateur---------------*/
+	rt_printf("Attente de la réponse de l'utilisateur \n");
+	rt_sem_p(&semArena, TM_INFINITE);
+	rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
+	if(etatThArena == 1){
+    /*--------------------------Arena OK--------------------------*/
+		rt_printf("L'arene est bien enregistrée \n");
+	}else if(etatThArena == -1) {
+    /*------------------------Arena NON OK------------------------*/
+		rt_printf("L'arene est jetee \n");
+	}	
+	rt_mutex_release(&mutexEtatThArena);
+
+	rt_mutex_release(&mutexCamera);	
+    }else {
+	rt_printf("Connexion perdue avec le moniteur \n");
+    }
+  }
 
 }
 

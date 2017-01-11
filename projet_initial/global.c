@@ -7,6 +7,7 @@
 
 #include "global.h"
 
+RT_TASK tarena ;
 RT_TASK tServeur;
 RT_TASK tconnect;
 RT_TASK tmove;
@@ -23,9 +24,11 @@ RT_MUTEX mutexServeur ;
 RT_MUTEX mutexCamera ;
 RT_MUTEX mutexArena ;
 RT_MUTEX mutexPosition ;
-
+RT_MUTEX mutexCptErrors ;
+RT_MUTEX mutexEtatThArena ;
 
 RT_SEM semConnecterRobot;
+RT_SEM semArena ;
 
 RT_QUEUE queueMsgGUI;
 
@@ -38,8 +41,8 @@ DServer *serveur;
 DCamera* webcam ;
 DArena* arena ;
 DPosition* position ;
-
-
+int compteur_errors ;
+int etatThArena =0 ;
 
 int MSG_QUEUE_SIZE = 10;
 
@@ -48,3 +51,5 @@ int PRIORITY_TCONNECT = 20;
 int PRIORITY_TMOVE = 10;
 int PRIORITY_TENVOYER = 25;
 int PRIORITY_TBATTERIE = 35;
+int PRIORITY_TIMAGE = 40;
+int PRIORITY_TARENA = 45;
