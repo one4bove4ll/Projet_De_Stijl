@@ -40,12 +40,21 @@ void wtd_ctrl_comm_sup_rob(void * arg){
     nb_errors = compteur_errors;
     rt_mutex_release(&mutexCptErrors);
     printf("compteur_errors = %d\n",nb_errors);    
-    if(nb_errors >= 4){ /* à partir de 4 pertes de messages entre le robot et le superviseur, on considere que la communication est perdue */
+    if(nb_errors >= 20){ /* à partir de 4 pertes de messages entre le robot et le superviseur, on considere que la communication est perdue */
       int status=STATUS_ERR_NO_FILE;  // !=STATUS_OK
       // envoyer un message au moniteur pour lui dire que la communication est perdue
       msg->put_state(msg, status);
       rt_printf("tcomm : Envoi message au moniteur de la part du serveur car perte de communication entre le superviseur et le robot\n");
       msg->print(msg, 100);
+
+	  rt_mutex_acquire(&mutexEtat, TM_INFINITE);
+      etatCommRobot = status;
+      rt_mutex_release(&mutexEtat);
+
+	  rt_mutex_acquire(&mutexCptErrors, TM_INFINITE);
+      compteur_errors=0;
+      nb_errors = compteur_errors;
+      rt_mutex_release(&mutexCptErrors);
 		  
       if (write_in_queue(&queueMsgGUI, msg, sizeof (DMessage)) < 0) {
     	msg->free(msg);
@@ -55,15 +64,7 @@ void wtd_ctrl_comm_sup_rob(void * arg){
       robot->close_com(robot);
       rt_mutex_release(&mutexRobot);
       //rt_task_delete(&wtd_ctrl_comm_sup_rob); 
-			
-      rt_mutex_acquire(&mutexEtat, TM_INFINITE);
-      etatCommRobot = status;
-      rt_mutex_release(&mutexEtat);
 
-      rt_mutex_acquire(&mutexCptErrors, TM_INFINITE);
-      compteur_errors=0;
-      nb_errors = compteur_errors;
-      rt_mutex_release(&mutexCptErrors);
       cond = 0;
     }
   }
@@ -80,29 +81,51 @@ void connecter(void * arg) {
     rt_printf("tconnect : Attente du sémarphore semConnecterRobot\n");
     rt_sem_p(&semConnecterRobot, TM_INFINITE);
 
+		rt_mutex_acquire(&mutexEtat, TM_INFINITE);
+	rt_printf("th_connecter : etatCommRobot = %d\n",etatCommRobot);
+		rt_mutex_release(&mutexEtat);
+
     rt_printf("tconnect : Ouverture de la communication avec le robot\n");
     rt_mutex_acquire(&mutexRobot,TM_INFINITE);
     status = robot->open_device(robot);
     rt_mutex_release(&mutexRobot);
-
-    rt_mutex_acquire(&mutexEtat, TM_INFINITE);
-    etatCommRobot = status;
-    rt_mutex_release(&mutexEtat);
+	rt_printf("\n\nstatus(open_device) = %d\n\n",status);
+	if(status == STATUS_OK){	
+		
+		rt_mutex_acquire(&mutexCptErrors, TM_INFINITE);
+      	compteur_errors=0;
+      	rt_mutex_release(&mutexCptErrors);
+	}
 
     if (status == STATUS_OK) {
       rt_mutex_acquire(&mutexRobot,TM_INFINITE);
       status = robot->start(robot); // remplace start_insecurely(robot)  
       rt_mutex_release(&mutexRobot);
 
-      rt_printf("tconnect : status=%d",status);
+      rt_printf("tconnect : status=%d\n",status);
       if (status == STATUS_OK){
-	rt_printf("tconnect : Robot démarrer\n");
-	if(err = rt_task_spawn(&tcomm,NULL,0,PRIORITY_TCOMM,0,&wtd_ctrl_comm_sup_rob,NULL)){
-	  rt_printf("Error task spawn: %s\n", strerror(-err));
-	  exit(EXIT_FAILURE);
+		rt_printf("tconnect : Robot démarrer\n");
+		if(err = rt_task_spawn(&tcomm,NULL,0,PRIORITY_TCOMM,0,&wtd_ctrl_comm_sup_rob,NULL)){
+		  rt_printf("Error task spawn: %s\n", strerror(-err));
+		  exit(EXIT_FAILURE);
+		}
+		
+		rt_mutex_acquire(&mutexEtat, TM_INFINITE);
+		etatCommRobot = status;
+		rt_mutex_release(&mutexEtat);
+		 rt_mutex_acquire(&mutexCptErrors, TM_INFINITE);
+      	compteur_errors=0;
+      	rt_mutex_release(&mutexCptErrors);
+      }else{
+		rt_mutex_acquire(&mutexCptErrors, TM_INFINITE);
+      	compteur_errors++;
+      	rt_mutex_release(&mutexCptErrors);
+		}
+    }else{
+		rt_mutex_acquire(&mutexCptErrors, TM_INFINITE);
+      	compteur_errors++;
+      	rt_mutex_release(&mutexCptErrors);
 	}
-      }
-    }
 
     message = d_new_message();
     message->put_state(message, status);
@@ -211,7 +234,7 @@ void deplacer(void *arg) {
   int gauche;
   int droite;
   DMessage *message;
-
+  int commRobot;
   rt_printf("tmove : Debut de l'éxecution de periodique à 200ms\n");
   rt_task_set_periodic(NULL, TM_NOW, 200000000);
 
@@ -250,23 +273,26 @@ void deplacer(void *arg) {
       }
       rt_mutex_release(&mutexMove);
       
-      rt_mutex_acquire(&mutexRobot,TM_INFINITE);
-      status = robot->set_motors(robot, gauche, droite);
-      rt_mutex_release(&mutexRobot);
-
-      if (status != STATUS_OK) {
-	/* erreur de communication entre le superviseur et le robot */
-	rt_mutex_acquire(&mutexCptErrors, TM_INFINITE);
-	compteur_errors++;
-	rt_mutex_release(&mutexCptErrors);
-
-	
-      }else {
-	/* communication reussie entre le superviseur et le robot */
-	rt_mutex_acquire(&mutexCptErrors, TM_INFINITE);
-	compteur_errors=0;
-	rt_mutex_release(&mutexCptErrors);
+	   rt_mutex_acquire(&mutexEtat, TM_INFINITE);
+      commRobot=etatCommRobot;
+	   rt_mutex_release(&mutexEtat);
+	   rt_printf("commRobot (deplacer) : %d\n",commRobot);
+	  if(commRobot == STATUS_OK){
+		  rt_mutex_acquire(&mutexRobot,TM_INFINITE);
+		  status = robot->set_motors(robot, gauche, droite);
+		  rt_mutex_release(&mutexRobot);
+      	  if (status != STATUS_OK) {
+		  /* erreur de communication entre le superviseur et le robot */
+			rt_mutex_acquire(&mutexCptErrors, TM_INFINITE);
+			compteur_errors++;
+			rt_mutex_release(&mutexCptErrors);
+		  }else {
+		/* communication reussie entre le superviseur et le robot */
+		rt_mutex_acquire(&mutexCptErrors, TM_INFINITE);
+		compteur_errors=0;
+		rt_mutex_release(&mutexCptErrors);
       }
+	}
     }
   }
 }
@@ -306,14 +332,17 @@ void th_battery(void * arg){
       d_robot_get_vbat(robot,&valbat);
       rt_mutex_release(&mutexRobot);
 
+	  rt_printf("valbat = %d\n",valbat);
+
       if(valbat ==-1){//erreur de connexion
-	rt_mutex_acquire(&mutexCptErrors,TM_INFINITE);
-	compteur_errors++;
-	rt_mutex_release(&mutexCptErrors);
+		rt_mutex_acquire(&mutexCptErrors,TM_INFINITE);
+		compteur_errors++;
+		rt_mutex_release(&mutexCptErrors);
       }else {//connexion ok
-	rt_mutex_acquire(&mutexCptErrors,TM_INFINITE);
-	compteur_errors=0;
-	rt_mutex_release(&mutexCptErrors);
+		rt_mutex_acquire(&mutexCptErrors,TM_INFINITE);
+		compteur_errors=0;
+		rt_mutex_release(&mutexCptErrors);
+		
         //j'envoie le Dmessage au moniteur
         d_battery_set_level(bat,valbat);
         msg = d_new_message(); 
@@ -343,6 +372,7 @@ void image(void * arg) {
   while(1){
     rt_task_wait_period(NULL);
     rt_printf("timage : Activation périodique\n");
+
     rt_mutex_acquire(&mutexCamera,TM_INFINITE); //debut de la section critique a ajuster !
     /*initialisation des variables*/
     //		webcam = d_new_camera();
@@ -368,7 +398,7 @@ void image(void * arg) {
 	
 
 
-    rt_mutex_acquire(&mutexComputePosition);
+    rt_mutex_acquire(&mutexComputePosition,TM_INFINITE);
     if(etatComputePosition == 1){ // si l'utilisateur a demandé à afficher la position du robot sur le moniteur
 		position = d_image_compute_robot_position(img,NULL);		
 		d_imageshop_draw_position(img,position); 		

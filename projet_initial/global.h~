@@ -28,11 +28,10 @@ extern RT_MUTEX mutexEtatCommMoniteur ;
 extern RT_MUTEX mutexEtatCamera ;
 extern RT_MUTEX mutexCamera ;
 extern RT_MUTEX mutexArena ;
-extern RT_MUTEX mutexPosition ;
+extern RT_MUTEX mutexComputePosition ;
 extern RT_MUTEX mutexServeur ;
 extern RT_MUTEX mutexCptErrors ;
 extern RT_MUTEX mutexEtatThArena ;
-extern RT_MUTEX mutexPosition;
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;
 extern RT_SEM semArena ;

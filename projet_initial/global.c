@@ -37,7 +37,7 @@ RT_QUEUE queueMsgGUI;
 int etatComputePosition = 0;
 int etatCommWebcam ;
 int etatCommMoniteur = 1;
-int etatCommRobot = 1;
+int etatCommRobot = -1;
 int compteur_errors = 0;
 int etatThArena =0 ;
 DRobot *robot;

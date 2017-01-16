@@ -51,7 +51,6 @@ extern DRobot *robot;
 extern DMovement *move;
 extern DCamera* webcam ;
 extern DArena* arena ;
-extern DPosition* position;
 /* @constantes */
 
 
