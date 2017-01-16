@@ -16,6 +16,7 @@ RT_TASK tcomm; /* task liée à la fonction "void wtd_ctrl_comm_sup_rob(void * a
 RT_TASK tbatterie;
 RT_TASK timage;
 
+
 RT_MUTEX mutexEtatCamera ;
 RT_MUTEX mutexEtatCommMoniteur ;
 RT_MUTEX mutexEtat;
@@ -24,7 +25,7 @@ RT_MUTEX mutexMove;
 RT_MUTEX mutexServeur ;
 RT_MUTEX mutexCamera ;
 RT_MUTEX mutexArena ;
-RT_MUTEX mutexPosition ;
+RT_MUTEX mutexComputePosition ;
 RT_MUTEX mutexCptErrors ;
 RT_MUTEX mutexEtatThArena ;
 
@@ -33,6 +34,7 @@ RT_SEM semArena ;
 
 RT_QUEUE queueMsgGUI;
 
+int etatComputePosition = 0;
 int etatCommWebcam ;
 int etatCommMoniteur = 1;
 int etatCommRobot = 1;
@@ -43,7 +45,6 @@ DMovement *move;
 DServer *serveur;
 DCamera* webcam ;
 DArena* arena ;
-DPosition* position ;
 
 int MSG_QUEUE_SIZE = 10;
 
@@ -51,7 +52,7 @@ int PRIORITY_TCONNECT = 20;
 int PRIORITY_TMOVE = 10;
 int PRIORITY_TENVOYER = 55;
 int PRIORITY_TBATTERIE = 5;
-int PRIORITY_TIMAGE = 20;
+int PRIORITY_TIMAGE = 19;
 int PRIORITY_TARENA = 24;
 int PRIORITY_TSERVEUR = 25;
-int PRIORITY_TCOMM = 50; /* voir si cela est bien */
+int PRIORITY_TCOMM = 50;

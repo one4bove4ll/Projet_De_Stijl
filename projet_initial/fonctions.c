@@ -120,7 +120,7 @@ void communiquer(void *arg) {
   DMessage *msg = d_new_message();
   int size = 1;
   int num_msg = 0;
-
+  int err;
   while(1){
     rt_printf("tserver : Début de l'exécution de serveur\n");
 		
@@ -156,7 +156,16 @@ void communiquer(void *arg) {
 	    break;
 	  case ACTION_COMPUTE_CONTINUOUSLY_POSITION:
 	    rt_printf("tserver : Action compute position\n");
+	    rt_mutex_acquire(&mutexComputePosition,TM_INFINITE);
+	    etatComputePosition = 1;
+	    rt_mutex_release(&mutexComputePosition);
 	    break;	
+	  case ACTION_STOP_COMPUTE_POSITION:
+		rt_printf("tserver : Action STOP compute position\n");
+	    rt_mutex_acquire(&mutexComputePosition,TM_INFINITE);
+	    etatComputePosition = 0;
+	    rt_mutex_release(&mutexComputePosition);	
+		break;
 	  case ACTION_FIND_ARENA:
 	    rt_printf("tserver : Demande de calibration de l'arene\n");
 	    rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
@@ -262,7 +271,7 @@ void deplacer(void *arg) {
   }
 }
 
-void th_battery(void * arg){
+void th_battery(void * arg){	
   
   DBattery* bat = d_new_battery();
   DMessage* msg ;
@@ -284,7 +293,7 @@ void th_battery(void * arg){
     //rt_printf("\n\ntbatterie : status lu : %d\n\n\n", status); //debug
     rt_mutex_release(&mutexEtat);
 
-    //je verifie la connexion avec le moniteur
+
     rt_mutex_acquire(&mutexEtatCommMoniteur, TM_INFINITE);
     status_moniteur = etatCommMoniteur ;
     rt_mutex_release(&mutexEtatCommMoniteur);
@@ -325,6 +334,8 @@ void image(void * arg) {
   DImage* img;
   DMessage* msg;
   DJpegimage* imgjpg ;
+  DPosition* position ;
+  DMessage * msgPos;
   //	DCamera* webcam ;
 
   rt_printf("timage : Debut de l'éxecution de periodique à 600ms\n");
@@ -336,7 +347,8 @@ void image(void * arg) {
     /*initialisation des variables*/
     //		webcam = d_new_camera();
     img = d_new_image();
-    msg = d_new_message();			
+    msg = d_new_message();	
+	msgPos = d_new_message();		
     imgjpg = d_new_jpegimage();
     /*----------------------------*/
 
@@ -353,7 +365,19 @@ void image(void * arg) {
       rt_mutex_release(&mutexArena);
     }
     rt_mutex_release(&mutexEtatThArena);
-		
+	
+
+
+    rt_mutex_acquire(&mutexComputePosition,TM_INFINITE);
+    if(etatComputePosition == 1){ // si l'utilisateur a demandé à afficher la position du robot sur le moniteur
+		position = d_image_compute_robot_position(img,NULL);		
+		d_imageshop_draw_position(img,position); 		
+		d_message_put_position(msgPos,position);
+		if (write_in_queue(&queueMsgGUI, msgPos, sizeof (DMessage)) < 0) {  //envoi message 
+			msgPos->free(msgPos);
+		}
+	}
+    rt_mutex_release(&mutexComputePosition);
 
     d_jpegimage_compress(imgjpg,img);  //compression
     d_message_put_jpeg_image(msg,imgjpg); //creation message
@@ -372,6 +396,7 @@ void image(void * arg) {
 
 void th_arena(void * arg){
   int status ;	
+  int do_it_again = 0 ;
   DMessage *msg;
   DImage *img ;
   DJpegimage* imgjpg ;
@@ -379,10 +404,13 @@ void th_arena(void * arg){
   rt_printf("tconnect : Debut de l'exécution de tarena\n");
 
   while (1) {
+if(!do_it_again){
     rt_printf("tarena : Attente du sémaphore semArena\n");
     rt_sem_p(&semArena, TM_INFINITE);
     rt_printf("tarena : Début de la calibration de l'arene\n");   
- 
+ }else {
+  do_it_again = 0 ; 
+}
     /*----------PARTIE 1 Calcul et detection de l'arene------------*/
     /*------------Verification Communication Moniteur--------------*/
     rt_mutex_acquire(&mutexEtatCommMoniteur, TM_INFINITE);
@@ -426,7 +454,9 @@ void th_arena(void * arg){
       }else if(etatThArena == -1) {
 	/*------------------------Arena NON OK------------------------*/
 	rt_printf("L'arene est jetee \n");
-      }	
+      }else if (etatThArena == 0) {
+        do_it_again = 1 ;
+      }
       rt_mutex_release(&mutexEtatThArena);
 
       rt_mutex_release(&mutexCamera);	
@@ -436,6 +466,9 @@ void th_arena(void * arg){
   }
 
 }
+
+
+
 
 int write_in_queue(RT_QUEUE *msgQueue, void * data, int size) {
   void *msg;

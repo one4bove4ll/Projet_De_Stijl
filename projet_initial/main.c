@@ -89,7 +89,7 @@ void initStruct(void) {
     rt_printf("Error mutex create: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
-  if (err = rt_mutex_create(&mutexPosition, NULL)) {
+  if (err = rt_mutex_create(&mutexComputePosition, NULL)) {
     rt_printf("Error mutex create: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
@@ -143,7 +143,6 @@ void initStruct(void) {
     rt_printf("Error task create: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
-   
   if (err = rt_task_create(&tarena, NULL, 0, PRIORITY_TARENA, 0)) {  //la priorité est à revoir
     rt_printf("Error task create: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
@@ -205,7 +204,6 @@ void deleteTasks() {
   d_camera_close(webcam);
   rt_task_delete(&tServeur);
   rt_task_delete(&tconnect);
-  rt_task_delete(&tmove);
   rt_task_delete(&tmove);
   rt_task_delete(&tbatterie);
   rt_task_delete(&timage);

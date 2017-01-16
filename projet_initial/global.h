@@ -28,11 +28,10 @@ extern RT_MUTEX mutexEtatCommMoniteur ;
 extern RT_MUTEX mutexEtatCamera ;
 extern RT_MUTEX mutexCamera ;
 extern RT_MUTEX mutexArena ;
-extern RT_MUTEX mutexPosition ;
+extern RT_MUTEX mutexComputePosition ;
 extern RT_MUTEX mutexServeur ;
 extern RT_MUTEX mutexCptErrors ;
 extern RT_MUTEX mutexEtatThArena ;
-
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;
 extern RT_SEM semArena ;
@@ -41,6 +40,7 @@ extern RT_SEM semArena ;
 extern RT_QUEUE queueMsgGUI;
 
 /* @variables partagées */
+extern int etatComputePosition;
 extern int etatCommWebcam ;
 extern int etatCommMoniteur;
 extern int etatCommRobot;
@@ -66,7 +66,6 @@ extern int PRIORITY_TCOMM; /* priorité de la tâche wdt_ctrl_comm_sup_rob */
 extern int PRIORITY_TBATTERIE;
 extern int PRIORITY_TIMAGE ;
 extern int PRIORITY_TARENA ;
-
 
 #endif	/* GLOBAL_H */
 
