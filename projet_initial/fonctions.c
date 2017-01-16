@@ -4,13 +4,17 @@ int write_in_queue(RT_QUEUE *msgQueue, void * data, int size);
 
 void envoyer(void * arg) {
   DMessage *msg;
-  int err;
+  int err,size;
 
   while (1) {
     rt_printf("tenvoyer : Attente d'un message\n");
     if ((err = rt_queue_read(&queueMsgGUI, &msg, sizeof (DMessage), TM_INFINITE)) >= 0) {
       rt_printf("tenvoyer : envoi d'un message au moniteur\n");
-      serveur->send(serveur, msg);
+      if((size = serveur->send(serveur, msg)) <0){
+		    rt_mutex_acquire(&mutexEtatCommMoniteur, TM_INFINITE);
+   			etatCommMoniteur = 1;
+    		rt_mutex_release(&mutexEtatCommMoniteur);
+	  }
       msg->free(msg);
     } else {
       rt_printf("Error msg queue write: %s\n", strerror(-err));
@@ -131,9 +135,9 @@ void communiquer(void *arg) {
 
     rt_printf("tserver : Connexion\n");
 
-    rt_mutex_acquire(&mutexEtat, TM_INFINITE);
+    rt_mutex_acquire(&mutexEtatCommMoniteur, TM_INFINITE);
     etatCommMoniteur = 0;
-    rt_mutex_release(&mutexEtat);
+    rt_mutex_release(&mutexEtatCommMoniteur);
 
     while (size > 0) {
       rt_printf("tserver : Attente d'un message\n");
@@ -144,62 +148,66 @@ void communiquer(void *arg) {
     
       num_msg++;
       if (size > 0) {
-	switch (msg->get_type(msg)) {
-	case MESSAGE_TYPE_ACTION:
-	  rt_printf("tserver : Le message %d reçu est une action\n",num_msg);
-	  DAction *action = d_new_action();
-	  action->from_message(action, msg);
-	  switch (action->get_order(action)) {
-	  case ACTION_CONNECT_ROBOT:
-	    rt_printf("tserver : Action connecter robot\n");
-	    rt_sem_v(&semConnecterRobot);
-	    break;
-	  case ACTION_COMPUTE_CONTINUOUSLY_POSITION:
-	    rt_printf("tserver : Action compute position\n");
-	    rt_mutex_acquire(&mutexComputePosition,TM_INFINITE);
-	    etatComputePosition = 1;
-	    rt_mutex_release(&mutexComputePosition);
-	    break;	
-	  case ACTION_STOP_COMPUTE_POSITION:
-		rt_printf("tserver : Action STOP compute position\n");
-	    rt_mutex_acquire(&mutexComputePosition,TM_INFINITE);
-	    etatComputePosition = 0;
-	    rt_mutex_release(&mutexComputePosition);	
-		break;
-	  case ACTION_FIND_ARENA:
-	    rt_printf("tserver : Demande de calibration de l'arene\n");
-	    rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
-	    etatThArena = 0 ;
-	    rt_mutex_release(&mutexEtatThArena);
-	    rt_sem_v(&semArena);
-	    break;
-	  case ACTION_ARENA_IS_FOUND:
-	    rt_printf("tserver : Arene Trouvée !! \n");
-	    rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
-	    etatThArena = 1 ;
-	    rt_mutex_release(&mutexEtatThArena);
-	    rt_sem_v(&semArena);
-	    break;
-	  case ACTION_ARENA_FAILED:
-	    rt_printf("tserver : Arene non trouvée :( \n");
-	    rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
-	    etatThArena = -1 ;
-	    rt_mutex_release(&mutexEtatThArena);
-	    rt_sem_v(&semArena);
-	    break;
+			switch (msg->get_type(msg)) {
+			case MESSAGE_TYPE_ACTION:
+			  rt_printf("tserver : Le message %d reçu est une action\n",num_msg);
+			  DAction *action = d_new_action();
+			  action->from_message(action, msg);
+			  switch (action->get_order(action)) {
+			  case ACTION_CONNECT_ROBOT:
+				rt_printf("tserver : Action connecter robot\n");
+				rt_sem_v(&semConnecterRobot);
+				break;
+			  case ACTION_COMPUTE_CONTINUOUSLY_POSITION:
+				rt_printf("tserver : Action compute position\n");
+				rt_mutex_acquire(&mutexComputePosition,TM_INFINITE);
+				etatComputePosition = 1;
+				rt_mutex_release(&mutexComputePosition);
+				break;	
+			  case ACTION_STOP_COMPUTE_POSITION:
+				rt_printf("tserver : Action STOP compute position\n");
+				rt_mutex_acquire(&mutexComputePosition,TM_INFINITE);
+				etatComputePosition = 0;
+				rt_mutex_release(&mutexComputePosition);	
+				break;
+			  case ACTION_FIND_ARENA:
+				rt_printf("tserver : Demande de calibration de l'arene\n");
+				rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
+				etatThArena = 0 ;
+				rt_mutex_release(&mutexEtatThArena);
+				rt_sem_v(&semArena);
+				break;
+			  case ACTION_ARENA_IS_FOUND:
+				rt_printf("tserver : Arene Trouvée !! \n");
+				rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
+				etatThArena = 1 ;
+				rt_mutex_release(&mutexEtatThArena);
+				rt_sem_v(&semArena);
+				break;
+			  case ACTION_ARENA_FAILED:
+				rt_printf("tserver : Arene non trouvée :( \n");
+				rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
+				etatThArena = -1 ;
+				rt_mutex_release(&mutexEtatThArena);
+				rt_sem_v(&semArena);
+				break;
+			  }
+			  break;
+			case MESSAGE_TYPE_MOVEMENT:
+			  rt_printf("tserver : Le message reçu %d est un mouvement\n",num_msg);
+			  rt_mutex_acquire(&mutexMove, TM_INFINITE);
+			  move->from_message(move, msg);
+			  move->print(move);
+			  rt_mutex_release(&mutexMove);
+			  break;
+			}
+	   	 
+      }else{
+		 rt_mutex_acquire(&mutexEtatCommMoniteur, TM_INFINITE);
+   		 etatCommMoniteur = 1;
+ 	     rt_mutex_release(&mutexEtatCommMoniteur);
 	  }
-	  break;
-	case MESSAGE_TYPE_MOVEMENT:
-	  rt_printf("tserver : Le message reçu %d est un mouvement\n",num_msg);
-	  rt_mutex_acquire(&mutexMove, TM_INFINITE);
-	  move->from_message(move, msg);
-	  move->print(move);
-	  rt_mutex_release(&mutexMove);
-	  break;
-	}
-		   	 
-      }
-    }
+    }tatus = etatCommRobot;
     /* cas d'une perte de communication entre le moniteur de le superviseur */
     /* on se remet en attente d'un message de connexion envoyé par le moniteur --> on remet size > 0 pour pouvoir rentrer une premiere fois dans le while(size>0) */
     size = 1;
@@ -336,6 +344,7 @@ void image(void * arg) {
   DJpegimage* imgjpg ;
   DPosition* position ;
   DMessage * msgPos;
+  int commMoniteur;
   //	DCamera* webcam ;
 
   rt_printf("timage : Debut de l'éxecution de periodique à 600ms\n");
@@ -344,50 +353,57 @@ void image(void * arg) {
     rt_task_wait_period(NULL);
     rt_printf("timage : Activation périodique\n");
     rt_mutex_acquire(&mutexCamera,TM_INFINITE); //debut de la section critique a ajuster !
-    /*initialisation des variables*/
-    //		webcam = d_new_camera();
-    img = d_new_image();
-    msg = d_new_message();	
-	msgPos = d_new_message();		
-    imgjpg = d_new_jpegimage();
-    /*----------------------------*/
 
-    /*--acquisition de l'image---*/
-    //d_camera_open(webcam);
-    d_camera_get_frame(webcam,img);
-    //d_camera_close(webcam);
-    /*--------------------------*/
+	rt_mutex_acquire(&mutexEtatCommMoniteur, TM_INFINITE);
+    commMoniteur = etatCommMoniteur;
+    rt_mutex_release(&mutexEtatCommMoniteur);
+	if(commMoniteur == 0){	
+	
+			/*initialisation des variables*/
+			//		webcam = d_new_camera();
+			img = d_new_image();
+			msg = d_new_message();	
+			msgPos = d_new_message();		
+			imgjpg = d_new_jpegimage();
+			/*----------------------------*/
 
-    rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
-    if(etatThArena == 1){
-      rt_mutex_acquire(&mutexArena,TM_INFINITE);
-      d_imageshop_draw_arena(img,arena);
-      rt_mutex_release(&mutexArena);
-    }
-    rt_mutex_release(&mutexEtatThArena);
+			/*--acquisition de l'image---*/
+			//d_camera_open(webcam);
+			d_camera_get_frame(webcam,img);
+			//d_camera_close(webcam);
+			/*--------------------------*/
+
+			rt_mutex_acquire(&mutexEtatThArena,TM_INFINITE);
+			if(etatThArena == 1){
+			  rt_mutex_acquire(&mutexArena,TM_INFINITE);
+			  d_imageshop_draw_arena(img,arena);
+			  rt_mutex_release(&mutexArena);
+			}
+			rt_mutex_release(&mutexEtatThArena);
 	
 
 
-    rt_mutex_acquire(&mutexComputePosition,TM_INFINITE);
-    if(etatComputePosition == 1){ // si l'utilisateur a demandé à afficher la position du robot sur le moniteur
-		position = d_image_compute_robot_position(img,NULL);		
-		d_imageshop_draw_position(img,position); 		
-		d_message_put_position(msgPos,position);
-		if (write_in_queue(&queueMsgGUI, msgPos, sizeof (DMessage)) < 0) {  //envoi message 
-			msgPos->free(msgPos);
-		}
+			rt_mutex_acquire(&mutexComputePosition,TM_INFINITE);
+			if(etatComputePosition == 1){ // si l'utilisateur a demandé à afficher la position du robot sur le moniteur
+				position = d_image_compute_robot_position(img,NULL);		
+				d_imageshop_draw_position(img,position); 		
+				d_message_put_position(msgPos,position);
+				if (write_in_queue(&queueMsgGUI, msgPos, sizeof (DMessage)) < 0) {  //envoi message 
+					msgPos->free(msgPos);
+				}
+			}
+			rt_mutex_release(&mutexComputePosition);
+
+			d_jpegimage_compress(imgjpg,img);  //compression
+			d_message_put_jpeg_image(msg,imgjpg); //creation message
+			if (write_in_queue(&queueMsgGUI, msg, sizeof (DMessage)) < 0) {
+			  msg->free(msg);
+			}		
+	
+			//		d_message_free(msg);
+			//		d_image_free(img);
+			//		d_jpegimage_free(imgjpg);
 	}
-    rt_mutex_release(&mutexComputePosition);
-
-    d_jpegimage_compress(imgjpg,img);  //compression
-    d_message_put_jpeg_image(msg,imgjpg); //creation message
-    if (write_in_queue(&queueMsgGUI, msg, sizeof (DMessage)) < 0) {
-      msg->free(msg);
-    }		
-	
-    //		d_message_free(msg);
-    //		d_image_free(img);
-    //		d_jpegimage_free(imgjpg);
     rt_mutex_release(&mutexCamera); //fin section critique
   }
 
@@ -414,7 +430,7 @@ if(!do_it_again){
     /*----------PARTIE 1 Calcul et detection de l'arene------------*/
     /*------------Verification Communication Moniteur--------------*/
     rt_mutex_acquire(&mutexEtatCommMoniteur, TM_INFINITE);
-    etatCommMoniteur = status;
+    status = etatCommMoniteur;
     rt_mutex_release(&mutexEtatCommMoniteur);
 
     if(status == STATUS_OK){
