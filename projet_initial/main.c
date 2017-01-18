@@ -163,18 +163,18 @@ void startTasks() {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
-/*  if (err = rt_task_start(&tmove, &deplacer, NULL)) {
-    rt_printf("Error task start: %s\n", strerror(-err));
-    exit(EXIT_FAILURE);
-  }*/
+  /*  if (err = rt_task_start(&tmove, &deplacer, NULL)) {
+      rt_printf("Error task start: %s\n", strerror(-err));
+      exit(EXIT_FAILURE);
+      }*/
   if (err = rt_task_start(&tenvoyer, &envoyer, NULL)) {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
- /* if (err = rt_task_start(&tbatterie, &th_battery, NULL)) {
-    rt_printf("Error task start: %s\n", strerror(-err));
-    exit(EXIT_FAILURE);
-  }*/
+  /* if (err = rt_task_start(&tbatterie, &th_battery, NULL)) {
+     rt_printf("Error task start: %s\n", strerror(-err));
+     exit(EXIT_FAILURE);
+     }*/
   if (err = rt_task_start(&timage, &image, NULL)) {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);

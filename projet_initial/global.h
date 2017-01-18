@@ -41,7 +41,6 @@ extern RT_QUEUE queueMsgGUI;
 
 /* @variables partagées */
 extern int etatComputePosition;
-extern int etatCommWebcam ;
 extern int etatCommMoniteur;
 extern int etatCommRobot;
 extern int compteur_errors ;
