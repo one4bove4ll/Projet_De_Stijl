@@ -121,25 +121,11 @@ void initStruct(void) {
     rt_printf("Error task create: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
-  if (err = rt_task_create(&tmove, NULL, 0, PRIORITY_TMOVE, 0)) {
-    rt_printf("Error task create: %s\n", strerror(-err));
-    exit(EXIT_FAILURE);
-  }
   if (err = rt_task_create(&tenvoyer, NULL, 0, PRIORITY_TENVOYER, 0)) {
     rt_printf("Error task create: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
-
-  if (err = rt_task_create(&tbatterie, NULL, 0, PRIORITY_TBATTERIE, 0)) {
-    rt_printf("Error task create: %s\n", strerror(-err));
-    exit(EXIT_FAILURE);
-  }
-   
   if (err = rt_task_create(&timage, NULL, 0, PRIORITY_TIMAGE, 0)) {  //la priorité est à revoir
-    rt_printf("Error task create: %s\n", strerror(-err));
-    exit(EXIT_FAILURE);
-  }
-  if (err = rt_task_create(&tcomm, NULL, 0, PRIORITY_TCOMM, 0)) {
     rt_printf("Error task create: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
@@ -177,18 +163,18 @@ void startTasks() {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
-  if (err = rt_task_start(&tmove, &deplacer, NULL)) {
+/*  if (err = rt_task_start(&tmove, &deplacer, NULL)) {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
-  }
+  }*/
   if (err = rt_task_start(&tenvoyer, &envoyer, NULL)) {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
-  if (err = rt_task_start(&tbatterie, &th_battery, NULL)) {
+ /* if (err = rt_task_start(&tbatterie, &th_battery, NULL)) {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
-  }
+  }*/
   if (err = rt_task_start(&timage, &image, NULL)) {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
@@ -204,8 +190,8 @@ void deleteTasks() {
   d_camera_close(webcam);
   rt_task_delete(&tServeur);
   rt_task_delete(&tconnect);
-  rt_task_delete(&tmove);
-  rt_task_delete(&tbatterie);
+  //rt_task_delete(&tmove);
+  //rt_task_delete(&tbatterie);
   rt_task_delete(&timage);
   rt_task_delete(&tarena);
 }

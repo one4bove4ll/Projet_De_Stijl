@@ -89,7 +89,7 @@ void initStruct(void) {
     rt_printf("Error mutex create: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
-  if (err = rt_mutex_create(&mutexPosition, NULL)) {
+  if (err = rt_mutex_create(&mutexComputePosition, NULL)) {
     rt_printf("Error mutex create: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
@@ -177,18 +177,18 @@ void startTasks() {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
-  if (err = rt_task_start(&tmove, &deplacer, NULL)) {
+/*  if (err = rt_task_start(&tmove, &deplacer, NULL)) {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
-  }
+  }*/
   if (err = rt_task_start(&tenvoyer, &envoyer, NULL)) {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
   }
-  if (err = rt_task_start(&tbatterie, &th_battery, NULL)) {
+ /* if (err = rt_task_start(&tbatterie, &th_battery, NULL)) {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
-  }
+  }*/
   if (err = rt_task_start(&timage, &image, NULL)) {
     rt_printf("Error task start: %s\n", strerror(-err));
     exit(EXIT_FAILURE);
@@ -204,8 +204,8 @@ void deleteTasks() {
   d_camera_close(webcam);
   rt_task_delete(&tServeur);
   rt_task_delete(&tconnect);
-  rt_task_delete(&tmove);
-  rt_task_delete(&tbatterie);
+  //rt_task_delete(&tmove);
+  //rt_task_delete(&tbatterie);
   rt_task_delete(&timage);
   rt_task_delete(&tarena);
 }
