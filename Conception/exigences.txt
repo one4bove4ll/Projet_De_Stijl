@@ -1,0 +1,28 @@
+exigence n°3 :
+___________________________________________________________________________
+
+
+Le superviseur doit envoyer toutes les 250ms l'état des batteries du robot au moniteur (si la connexion du moniteur jusqu'au robot est toujours active).
+
+Justification : 
+______________
+
+La creation d'un thread périodique (de période 250 ms) entièrement dédié à la demande/reception de l'état de la batterie permet de répondre cette exigence. Ce thread ne s'execute que si les connexions avec le robot et le moniteur sont bonnes. Si elles sont bonnes, la valeur de la batterie est récupérée avec les primitives mises à disposition, cette valeur est encapsulée dans un message, et le message est envoyé au moniteur. Dans le cas contraire, le thread ne fait rien.
+
+
+
+exigence n°9 :
+___________________________________________________________________________
+
+Sur réception d’une proposition d’image avec l’arène détectée fournie par le superviseur, l’utilisateur doit pouvoir, via le moniteur, soit valider l’image reçue (dans ce cas, le superviseur sauvegarde l’arène puis revient dans son mode d’envoi périodique des images), soit annuler la recherche (dans ce cas, le superviseur revient dans son mode d’envoi périodique des images), soit demander une nouvelle recherche (dans ce cas, cf. exigence 8)
+
+Justification :
+______________
+
+Pour répondre à cette exigence, nous avons créé un thread apériodique. La première étape de ce thread est l'attente d'un sémaphore (un sémaphore libéré par communiquer lors de la réception du message adéquat). Après cela le calcul de l'arène est lancé et affiché sur l'image. Le thread se met en attente d'une réaction de l'utilisateur(attente d'un semaphore). L'utilisateur peut avoir trois comportements différents :
+
+	-- L'arène calculée est validée par l'utilisateur, dans le cas l'arène est 	sauvegardée et affichée sur toutes les images par la suite.
+	-- L'arène calculée n'est pas validée par l'utilisateur, dans ce cas une 	nouvelle détection d'arène est lancée sans attendre le moindre sémaphore
+	-- La detection d'arène est abandonnée par l'utilisateur, dans ce cas l'arène	n'est pas sauvegardée (elle ne sera donc pas affichée), se thread se remet en position initiale. 
+
+On utilise une variable globale (protégée par un mutex) pour indiquer si l'arène est sauvegardée (0 : aucune arène n'a été calculée, 1 : l'aréne calculée a été validée par l'utilisateur, -1 : l'arène calculée n'a pas été validée par l'utilisateur). Le thread image consulte la valeur de cette variable pour savoir si oui ou non il faut déssiner l'arène sur l'image à envoyer au moniteur.
